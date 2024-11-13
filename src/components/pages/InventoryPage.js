@@ -16,6 +16,8 @@ export default function InventoryPage({ isDarkMode }) {
     fetchInventory();
   }, []);
 
+  // waawfwqwq
+
   const fetchInventory = async () => {
     try {
       const response = await axios.post('http://10.123.79.112:1026/u/home/json/pmai006', {
