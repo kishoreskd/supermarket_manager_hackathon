@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { LineChart, Line, PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle, X, Home, Users, ShoppingBag, Briefcase, MessageSquare, Settings, ChevronDown, FileText, Mail, Calendar, Star, Upload, Lock } from 'lucide-react';
 import InventoryPage from './inventory/InventoryPage.js';
 import CustomerPage from './customers/CustomerPage';
 import OrdersPage from './orders/OrdersPage';
@@ -121,13 +121,41 @@ export default function Dashboard() {
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [isChatOpen, setIsChatOpen] = useState(false);
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard' },
-    { id: 'inventory', label: 'Inventory' },
-    { id: 'customers', label: 'Customers' },
-    { id: 'orders', label: 'Orders' },
-    { id: 'staff', label: 'Staff' },
-    { id: 'coupons', label: 'Coupons' },
-    { id: 'feedback', label: 'Feedback' }
+    { 
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: <Home size={18} />
+    },
+    {
+      id: 'inventory',
+      label: 'Inventory',
+      icon: <ShoppingBag size={18} />
+    },
+    {
+      id: 'customers',
+      label: 'Customers',
+      icon: <Users size={18} />
+    },
+    {
+      id: 'orders',
+      label: 'Orders',
+      icon: <FileText size={18} />
+    },
+    {
+      id: 'staff',
+      label: 'Staff',
+      icon: <Users size={18} />
+    },
+    {
+      id: 'coupons',
+      label: 'Coupons',
+      icon: <Star size={18} />
+    },
+    {
+      id: 'feedback',
+      label: 'Feedback',
+      icon: <MessageSquare size={18} />
+    }
   ];
   
   // Sample data
@@ -156,104 +184,137 @@ export default function Dashboard() {
     setLastUpdate(new Date());
   };
 
-  const renderContent = () => {
-    switch(currentModule) {
-      case 'dashboard':
-        return (
-          <>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900">Dashboard</h2>
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-900">
-                  Last updated: {lastUpdate.toLocaleTimeString()}
-                </span>
-                <button
-                  onClick={refreshDashboard}
-                  className="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
-                >
-                  Refresh Data
-                </button>
+  const renderDashboardContent = () => {
+    return (
+      <>
+        <div className="p-6">
+          <h1 className="text-xl font-semibold mb-2">Ecommerce Dashboard</h1>
+          <p className="text-sm text-gray-500 mb-6">Here's what's going on with your business right now</p>
+
+          {/* Order Statistics */}
+          <div className="flex gap-4 mb-8">
+            <div className="flex items-center gap-3 bg-white p-4 rounded-lg flex-1">
+              <div className="bg-green-100 p-2 rounded-lg">
+                <div className="text-green-600">↑</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">57 new orders</div>
+                <div className="text-xs text-gray-400">Awaiting processing</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 bg-white p-4 rounded-lg flex-1">
+              <div className="bg-yellow-100 p-2 rounded-lg">
+                <div className="text-yellow-600">!</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">5 orders</div>
+                <div className="text-xs text-gray-400">On hold</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 bg-white p-4 rounded-lg flex-1">
+              <div className="bg-red-100 p-2 rounded-lg">
+                <div className="text-red-600">×</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">15 products</div>
+                <div className="text-xs text-gray-400">Out of stock</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-3 gap-6">
+            {/* Total Sales Chart */}
+            <div className="col-span-2 bg-white p-6 rounded-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="font-semibold">Total sells</h2>
+                <select className="border rounded-md px-2 py-1 text-sm">
+                  <option>Mar 1, 2022</option>
+                </select>
+              </div>
+              <div style={{ height: "300px" }}>
+                <ResponsiveContainer>
+                  <LineChart data={sampleData.sales}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="amount" stroke="#2563eb" strokeWidth={2} dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-lg font-semibold mb-2 text-gray-900">Total Orders</h3>
-                <div className="text-3xl font-bold text-blue-900">152</div>
-                <div className="text-sm text-gray-900">This month</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-lg font-semibold mb-2 text-gray-900">Revenue</h3>
-                <div className="text-3xl font-bold text-green-600">$45,250</div>
-                <div className="text-sm text-gray-900">This month</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-lg font-semibold mb-2 text-gray-900">Active Customers</h3>
-                <div className="text-3xl font-bold text-purple-900">89</div>
-                <div className="text-sm text-gray-500">This month</div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Sales Chart */}
-              <div className="bg-white p-6 rounded-xl shadow-sm md:col-span-2">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900">Daily Sales</h3>
-                <div style={{ width: '100%', height: 300 }}>
-                  <ResponsiveContainer>
-                    <LineChart data={sampleData.sales}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis dataKey="date" stroke="#111827" tick={{ fill: '#111827' }} />
-                      <YAxis stroke="#111827" tick={{ fill: '#111827' }} />
-                      <Tooltip contentStyle={{ background: 'white', border: '1px solid #e0e0e0' }} />
-                      <Legend />
-                      <Line type="monotone" dataKey="amount" stroke="#2563eb" strokeWidth={2} />
-                    </LineChart>
-                  </ResponsiveContainer>
+            {/* Statistics Cards */}
+            <div className="space-y-6">
+              <div className="bg-white p-6 rounded-lg">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-sm font-medium">Total orders</h3>
+                  <span className="text-red-500 text-sm">-6.8%</span>
                 </div>
-              </div>
-
-              {/* Best Sellers */}
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900">Best Selling Products</h3>
-                <div style={{ width: '100%', height: 300 }}>
+                <div className="text-2xl font-semibold mb-4">16,247</div>
+                <div style={{ height: "100px" }}>
                   <ResponsiveContainer>
-                    <PieChart>
-                      <Pie
-                        data={sampleData.bestSellers}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        fill="#2563eb"
-                        label
-                      />
-                      <Tooltip contentStyle={{ background: 'white', border: '1px solid #e0e0e0' }} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Customer Satisfaction Report */}
-              <div className="bg-white p-6 rounded-xl shadow-sm md:col-span-3">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900">Customer Satisfaction Report</h3>
-                <div style={{ width: '100%', height: 300 }}>
-                  <ResponsiveContainer>
-                    <BarChart data={feedbackData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis dataKey="type" stroke="#666" />
-                      <YAxis domain={[0, 5]} stroke="#666" />
-                      <Tooltip contentStyle={{ background: 'white', border: '1px solid #e0e0e0' }} />
-                      <Legend />
-                      <Bar dataKey="average" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                    <BarChart data={sampleData.sales}>
+                      <Bar dataKey="amount" fill="#2563eb" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
+
+              <div className="bg-white p-6 rounded-lg">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-sm font-medium">New customers</h3>
+                  <span className="text-green-500 text-sm">+26.5%</span>
+                </div>
+                <div className="text-2xl font-semibold">356</div>
+              </div>
             </div>
-          </>
-        );
+          </div>
+
+          {/* Reviews Section */}
+          <div className="mt-6">
+            <h2 className="font-semibold mb-4">Latest reviews</h2>
+            <div className="bg-white rounded-lg">
+              <table className="w-full">
+                <thead className="text-sm text-gray-500">
+                  <tr className="border-b">
+                    <th className="text-left p-4">PRODUCT</th>
+                    <th className="text-left p-4">CUSTOMER</th>
+                    <th className="text-left p-4">RATING</th>
+                    <th className="text-left p-4">REVIEW</th>
+                    <th className="text-left p-4">STATUS</th>
+                    <th className="text-left p-4">TIME</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm">
+                  <tr className="border-b">
+                    <td className="p-4">
+                      <div className="flex items-center gap-2">
+                        <img src="/product1.jpg" className="w-8 h-8 rounded" />
+                        <span>Elite Series Advanced...</span>
+                      </div>
+                    </td>
+                    <td className="p-4">Richard Dawkins</td>
+                    <td className="p-4">★★★★★</td>
+                    <td className="p-4">This Fitbit is fantastic! I was trying to be in better shape...</td>
+                    <td className="p-4"><span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Approved</span></td>
+                    <td className="p-4">Just now</td>
+                  </tr>
+                  {/* Add more review rows as needed */}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const renderContent = () => {
+    switch(currentModule) {
+      case 'dashboard':
+        return renderDashboardContent();
       case 'inventory':
         return <InventoryPage />;
       case 'customers':
@@ -271,28 +332,62 @@ export default function Dashboard() {
     }
   };
 
+  // Add state for expanded menu sections
+  const [expandedSections, setExpandedSections] = useState({
+    home: true,
+    apps: false,
+    pages: false
+  });
+
+  const toggleSection = (sectionId) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionId]: !prev[sectionId]
+    }));
+  };
+
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
+      {/* Updated Sidebar */}
       <div className="w-64 bg-white border-r border-gray-200">
-        <div className="p-6">
-          <h1 className="text-xl font-bold mb-8 text-gray-900">Supermarket</h1>
-          <nav className="space-y-1">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setCurrentModule(item.id)}
-                className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                  currentModule === item.id
-                    ? 'bg-blue-50 text-blue-700 font-medium'
-                    : 'text-gray-900 hover:bg-gray-50'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
+        {/* Logo Section */}
+        <div className="p-4 border-b border-gray-200">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-gray-800">Super Market Manager</span>
+          </div>
         </div>
+
+        {/* Search Bar */}
+        <div className="p-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-full px-3 py-2 pl-8 text-sm bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300"
+            />
+            <span className="absolute left-2.5 top-2.5 text-gray-400">
+              {/* Add your search icon here */}
+            </span>
+          </div>
+        </div>
+
+        {/* Navigation Menu */}
+        <nav className="px-3 py-2">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setCurrentModule(item.id)}
+              className={`w-full flex items-center gap-2 p-2 mb-1 text-sm rounded-md transition-colors ${
+                currentModule === item.id
+                  ? 'text-blue-600 bg-blue-50 font-medium'
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </nav>
       </div>
 
       {/* Main Content */}

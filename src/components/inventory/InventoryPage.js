@@ -106,68 +106,141 @@ export default function InventoryPage() {
 
   return (
     <div className="p-6">
+      <h1 className="text-xl font-semibold mb-2">Inventory Management</h1>
+      <p className="text-sm text-gray-500 mb-6">Track and manage your product inventory</p>
+
+      {/* Inventory Statistics */}
+      <div className="flex gap-4 mb-8">
+        <div className="flex items-center gap-3 bg-white p-4 rounded-lg flex-1">
+          <div className="bg-green-100 p-2 rounded-lg">
+            <div className="text-green-600">↑</div>
+          </div>
+          <div>
+            <div className="text-sm text-gray-600">122 products</div>
+            <div className="text-xs text-gray-400">In stock</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 bg-white p-4 rounded-lg flex-1">
+          <div className="bg-yellow-100 p-2 rounded-lg">
+            <div className="text-yellow-600">!</div>
+          </div>
+          <div>
+            <div className="text-sm text-gray-600">8 products</div>
+            <div className="text-xs text-gray-400">Low stock</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 bg-white p-4 rounded-lg flex-1">
+          <div className="bg-red-100 p-2 rounded-lg">
+            <div className="text-red-600">×</div>
+          </div>
+          <div>
+            <div className="text-sm text-gray-600">15 products</div>
+            <div className="text-xs text-gray-400">Out of stock</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Actions Bar */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Inventory Management</h2>
+        <div className="flex gap-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="w-64 px-3 py-2 pl-8 text-sm bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300"
+            />
+            <span className="absolute left-2.5 top-2.5 text-gray-400">
+              {/* Add search icon here */}
+            </span>
+          </div>
+          <select className="px-3 py-2 text-sm bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300">
+            <option>All categories</option>
+            <option>Electronics</option>
+            <option>Clothing</option>
+            <option>Accessories</option>
+          </select>
+        </div>
         <div className="flex gap-4">
           <button
             onClick={fetchInventory}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-md hover:bg-gray-50"
           >
-            Refresh Data
+            Refresh
           </button>
           <button
             onClick={() => setShowAddForm(true)}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700"
           >
-            Add New Item
+            Add Product
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {inventory.map((item) => (
-              <tr key={item.ws_item_id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">{item.ws_item_id}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.ws_item_name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  ${item.ws_unit_price.toFixed(2)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    item.ws_stock < 10 ? 'bg-red-100 text-red-800' : 
-                    item.ws_stock < 30 ? 'bg-yellow-100 text-yellow-800' : 
-                    'bg-green-100 text-green-800'
-                  }`}>
-                    {item.ws_stock}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.ws_category}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button className="text-indigo-600 hover:text-indigo-900 mr-4">Edit</button>
-                  <button 
-                    onClick={() => handleDeleteItem(item.ws_item_id)}
-                    className="text-red-600 hover:text-red-900"
-                  >
-                    Delete
-                  </button>
-                </td>
+      {error ? (
+        <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
+          <p>{error}</p>
+          <button 
+            onClick={fetchInventory}
+            className="mt-2 text-sm text-red-700 hover:text-red-900 underline"
+          >
+            Try Again
+          </button>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-sm">
+          <table className="min-w-full">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {inventory.map((item) => (
+                <tr key={item.ws_item_id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm text-gray-900">{item.ws_item_id}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500">
+                        {item.ws_item_name[0]}
+                      </div>
+                      <span className="text-sm text-gray-900">{item.ws_item_name}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    ${item.ws_unit_price.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      item.ws_stock < 10 ? 'bg-red-100 text-red-800' : 
+                      item.ws_stock < 30 ? 'bg-yellow-100 text-yellow-800' : 
+                      'bg-green-100 text-green-800'
+                    }`}>
+                      {item.ws_stock}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{item.ws_category}</td>
+                  <td className="px-6 py-4 text-sm">
+                    <div className="flex gap-2">
+                      <button className="text-blue-600 hover:text-blue-800">Edit</button>
+                      <button 
+                        onClick={() => handleDeleteItem(item.ws_item_id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Add Item Form Modal */}
       {showAddForm && (
